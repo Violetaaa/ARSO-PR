@@ -20,6 +20,9 @@ services:
       retries: 5
       interval: 15s
       start_period: 30s
+    networks:
+      db-network:
+
 
   node-app:
     build: ./node-app
@@ -34,3 +37,23 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+    networks:
+      web-network:
+      db-network:
+
+
+  reverse-proxy:
+    build: ./reverse-proxy
+    container_name: reverse-proxy
+    ports:
+      - 80:80
+    networks:
+      web-network:
+    depends_on:
+      - node-app
+
+networks:
+  db-network:
+    name: db-network
+  web-network:
+    name: web-network
