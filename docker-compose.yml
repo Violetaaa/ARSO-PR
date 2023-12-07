@@ -15,3 +15,22 @@ services:
     volumes:
       - ./database:/var/lib/mongodb/data
       - ./data-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      retries: 5
+      interval: 15s
+      start_period: 30s
+
+  node-app:
+    build: ./node-app
+    container_name: node-app
+    ports:
+      - 5000:3000
+    environment:
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_DATABASE=${MONGO_DATABASE}
+      - MONGO_HOST=${MONGO_HOST}
+    depends_on:
+      mongodb:
+        condition: service_healthy
