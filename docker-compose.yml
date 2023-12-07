@@ -3,3 +3,15 @@ version: '3.6'
 services:
   mongodb:
     image: mongo:7-jammy
+    container_name: mongodb
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_USERNAME=${MONGO_USERNAME}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_DATABASE=${MONGO_DATABASE}
+    volumes:
+      - ./database:/var/lib/mongodb/data
+      - ./data-mongo.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
